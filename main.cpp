@@ -2,12 +2,13 @@
 
 int main() {
   vector<DataPoint> dataset;
-  get_data(dataset);
+  get_data(dataset,0);
   size_t k; cout << "Number of clusters: "; cin >> k;
   k_means_clustering(dataset, k);
   RenderWindow win(VideoMode(W, H), "K-Means Visualizador");
   win.setFramerateLimit(60);//FPS
   View screen(FloatRect(0.f, 0.f, W, H));
+  screen.setCenter(dataset[0].longitude, dataset[0].latitude);
   Event e;
   while (win.isOpen()) {
     while (win.pollEvent(e)) {
@@ -17,10 +18,10 @@ int main() {
         if (Keyboard::isKeyPressed(Keyboard::Space))show_clusters = !show_clusters;
       }
     }
-    if (Keyboard::isKeyPressed(Keyboard::Right))screen.move(10.f, 0.f);
-    if (Keyboard::isKeyPressed(Keyboard::Left))screen.move(-10.f, 0.f);    
-    if (Keyboard::isKeyPressed(Keyboard::Up))screen.move(0.f, -10.f);    
-    if (Keyboard::isKeyPressed(Keyboard::Down))screen.move(0.f, 10.f);
+    if (Keyboard::isKeyPressed(Keyboard::Right))screen.move(screen.getSize().x /100.f, 0.f);
+    if (Keyboard::isKeyPressed(Keyboard::Left))screen.move(-screen.getSize().x/100.f, 0.f);
+    if (Keyboard::isKeyPressed(Keyboard::Up))screen.move(0.f, -screen.getSize().y/100.f);
+    if (Keyboard::isKeyPressed(Keyboard::Down))screen.move(0.f, screen.getSize().y/100.f);
     win.setView(screen);
     win.clear(Color(255, 255, 255));//RGB
     for (DataPoint &p : dataset) {
