@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <time.h>
@@ -7,9 +8,13 @@
 #include <algorithm>
 #include <numeric>
 #include <math.h>
+#include <stdexcept>
 
 using namespace std;
 using namespace sf;
+
+#define ERROR_FILE_NOT_FOUND "ERROR: The file can not be openned."
+#define ALERT(message) cout << message << endl;
 
 bool show_clusters = true;
 
@@ -39,8 +44,8 @@ struct DataPoint {
   CircleShape point;
   DataPoint() { latitude = longitude = cluster_id = 0; }
   DataPoint(long double lon, long double lat) : latitude(lat), longitude(lon) {
-    point.setRadius(0.5f);
-    point.setOrigin(0.5f, 0.5f);
+    point.setRadius(0.25f);
+    point.setOrigin(0.25f, 0.25f);
     point.setPosition(longitude, latitude);
     cluster_id = 0;
   }
@@ -65,6 +70,21 @@ struct DataPoint {
     win->draw(point);
   }
 };
+
+vector<double> frag_s2d(string line, char sep) {
+  vector<double> fragments;
+  line.push_back(' ');
+  string data;
+  for (char &i : line) {
+    if (i == sep) {
+      fragments.push_back(stod(data));
+      data.clear();
+      continue;
+    }
+    data.push_back(i);
+  }
+  return fragments;
+}
 
 int Random_Number(int f_n, int s_n) {
   if (f_n > s_n) {
@@ -232,27 +252,53 @@ void k_means_clustering(vector<DataPoint> &dataset, size_t k) {
 
 void get_data(vector<DataPoint> &dataset, bool random_gen = true) {
   if (random_gen) {
-    srand(time(NULL));
-    unsigned int X; cout << "Limit X: "; cin >> X;
-    unsigned int Y; cout << "Limit Y: "; cin >> Y;
-    PerlinNoise2D noise_generator(Random_Number(-75812165, 7515128));
-    PerlinNoise2D z_noise(Random_Number(-75812165, 7515128));
-    for (int i = 0; i < X; ++i) {
-      for (int j = 0; j < Y; ++j) {
-        double x = (double)j / ((double)X);
-        double y = (double)i / ((double)Y);
-        double n = noise_generator.noise(10 * x, 10 * y, 0.8);
-        n = n - floor(n);
-        double rnoise = floor(255 * n);
-        if (Random_Number(120,255) < rnoise) {
-          dataset.push_back(DataPoint(i, j));
+    string op; cout << "Shape: "; cin >> op;
+    if (op == "random") {
+      srand(time(NULL));
+      unsigned int X; cout << "Limit X: "; cin >> X;
+      unsigned int Y; cout << "Limit Y: "; cin >> Y;
+      PerlinNoise2D noise_generator(Random_Number(-75812165, 7515128));
+      PerlinNoise2D z_noise(Random_Number(-75812165, 7515128));
+      int rfact = Random_Number(2, 10);
+      for (int i = 0; i < X; ++i) {
+        for (int j = 0; j < Y; ++j) {
+          double x = (double)j / ((double)X);
+          double y = (double)i / ((double)Y);
+          double n = noise_generator.noise(rfact * x, rfact * y, 0.8);
+          n = n - floor(n);
+          double rnoise = floor(255 * n);
+          if (Random_Number(120, 255) < rnoise) {
+            dataset.push_back(DataPoint(i, j));
+          }
         }
       }
+    }
+    else if(op == "bubbles") {
+
     }
     cout << "Dataset created.\n";
   }
   else {
     string path; cout << "Name of the file: "; cin >> path;
+    ifstream dataset_points(path);
+    try {
+      if (dataset_points.is_open()) {
+        ALERT(">>file " + path.substr(0, size_t(path.length()) - 4) + " openned");
+
+        string data_line;
+        while (!dataset_points.eof()) {
+          getline(dataset_points, data_line);
+          vector<double> data = frag_s2d(data_line, ' ');
+          dataset.push_back(DataPoint(data[0]*500, data[1]*500));
+        }
+      }
+      else {
+        throw runtime_error(ERROR_FILE_NOT_FOUND);
+      }
+    }
+    catch (const exception &error) {
+      ALERT(error.what());
+    }
     cout << "Dataset loaded.\n";
   }
 }
