@@ -45,8 +45,8 @@ struct DataPoint {
   CircleShape point;
   DataPoint() { latitude = longitude = cluster_id = 0; }
   DataPoint(long double lon, long double lat) : latitude(lat), longitude(lon) {
-    point.setRadius(0.25f);
-    point.setOrigin(0.25f, 0.25f);
+    point.setRadius(0.05f);
+    point.setOrigin(0.05f, 0.05f);
     point.setPosition(longitude, latitude);
     cluster_id = 0;
   }
@@ -311,10 +311,12 @@ void get_data(vector<DataPoint> &dataset, bool random_gen = true) {
         ALERT(">>file " + path.substr(0, size_t(path.length()) - 4) + " openned");
 
         string data_line;
-        while (!dataset_points.eof()) {
+        long long int n_data = 0;
+        while (!dataset_points.eof() && n_data < 100000) {
           getline(dataset_points, data_line);
           vector<double> data = frag_s2d(data_line, ' ');
           dataset.push_back(DataPoint(data[0]*500, data[1]*500));
+          ++n_data;
         }
         dataset_points.close();
         cout << "N" << char(167) << " Points: " << dataset.size() << endl;
