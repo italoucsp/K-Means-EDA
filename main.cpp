@@ -5,7 +5,7 @@ int main() {
   string op; cout << "Generate or Load?: "; cin >> op;
   if(op == "generate")
     get_data(dataset);
-  else
+  else if(op == "load")
     get_data(dataset,0);
   size_t k; cout << "N" << char(167) << " clusters: "; cin >> k;
   k_means_clustering(dataset, k);
