@@ -27,7 +27,12 @@ int main() {
     if (Keyboard::isKeyPressed(Keyboard::Up))screen.move(0.f, -screen.getSize().y/100.f);
     if (Keyboard::isKeyPressed(Keyboard::Down))screen.move(0.f, screen.getSize().y/100.f);
     win.setView(screen);
-    win.clear(Color(255, 255, 255));//RGB
+    if (show_clusters) {
+      win.clear(Color(0, 0, 0));//RGB
+    }
+    else {
+      win.clear(Color(255, 255, 255));//RGB
+    }
     for (DataPoint &p : dataset) {
       p.show(&win);
     }
