@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <numeric>
 #include <math.h>
+#include <utility>
 #include <stdexcept>
 
 using namespace std;
@@ -186,6 +187,15 @@ double get_distance(const DataPoint A, const DataPoint B) {
   return sqrt(pow(A.latitude - B.latitude, 2) + pow(A.longitude - B.longitude, 2));
 }
 
+bool is_in_any_bubble(vector<pair<DataPoint, int>> &bubbles, DataPoint A) {
+  for (pair<DataPoint,int> &b : bubbles) {
+    if (get_distance(b.first, A) <= b.second) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool eval_centroids(vector<DataPoint> &centroids) {
   bool ok = true;
   for (DataPoint &centroid : centroids) {
@@ -274,6 +284,21 @@ void get_data(vector<DataPoint> &dataset, bool random_gen = true) {
       }
     }
     else if(op == "bubbles") {
+      srand(time(NULL));
+      unsigned int X; cout << "Limit X: "; cin >> X;
+      unsigned int Y; cout << "Limit Y: "; cin >> Y;
+      unsigned int B; cout << "Bubbles: "; cin >> B;
+      vector<pair<DataPoint, int>> bubbles;
+      for (int i = 0; i < B; ++i) {
+        bubbles.push_back(make_pair(DataPoint(Random_Number(0, X),Random_Number(0, Y)), Random_Number(10,20)));
+      }
+      for (int i = 0; i < X; ++i) {
+        for (int j = 0; j < Y; ++j) {
+          if (Random_Number(0, 1) == 1 && is_in_any_bubble(bubbles, DataPoint(i,j))) {
+            dataset.push_back(DataPoint(i, j));
+          }
+        }
+      }
 
     }
     cout << "Dataset created.\n";
@@ -291,6 +316,8 @@ void get_data(vector<DataPoint> &dataset, bool random_gen = true) {
           vector<double> data = frag_s2d(data_line, ' ');
           dataset.push_back(DataPoint(data[0]*500, data[1]*500));
         }
+        dataset_points.close();
+        cout << "N" << char(167) << " Points: " << dataset.size() << endl;
       }
       else {
         throw runtime_error(ERROR_FILE_NOT_FOUND);
