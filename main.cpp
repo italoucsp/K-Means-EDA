@@ -2,8 +2,12 @@
 
 int main() {
   vector<DataPoint> dataset;
-  get_data(dataset,0);
-  size_t k; cout << "Number of clusters: "; cin >> k;
+  string op; cout << "Generate or Load?: "; cin >> op;
+  if(op == "generate")
+    get_data(dataset);
+  else
+    get_data(dataset,0);
+  size_t k; cout << "N" << char(167) << " clusters: "; cin >> k;
   k_means_clustering(dataset, k);
   RenderWindow win(VideoMode(W, H), "K-Means Visualizador");
   win.setFramerateLimit(60);//FPS
