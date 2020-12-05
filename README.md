@@ -1,3 +1,5 @@
 # K-Means-EDA
 Implementation of K-means algorithm using C++ and SFML.
-![Alt text](/assets/asset_1_no_cluster.png?raw=true "Optional Title")
+
+![Conjunto de datos sin agrupar](/assets/asset_1_no_cluster.png?raw=true "Visualizador sin agrupación de datos")
+![Conjunto de datos agrupados](/assets/asset_2_ok_cluster.png?raw=true "Agrupación por k-means")
