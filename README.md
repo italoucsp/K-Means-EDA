@@ -7,6 +7,8 @@ Implementation of K-means algorithm using C++ and SFML.
 * void k_means_clustering(vector<DataPoint> &dataset, size_t k)
 * void get_data(vector<DataPoint> &dataset, bool random_gen = true)
 
+## Bubble k-means:
+![Conjunto de datos burbuja](/assets/bubble_kmeans.png?raw=true "Dataset con forma de burbujas")
 ## Random data set:
 ![Conjunto de datos sin agrupar](/assets/asset_1_no_cluster.png?raw=true "Visualizador sin agrupación de datos")
 ## Example with k = 5:
