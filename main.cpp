@@ -1,5 +1,19 @@
 #include "KmeansCode.hpp"
 
+void draw_data(vector<DataPoint> dataset, RenderWindow &win, View &screen) {
+  size_t lim = 0;
+  float new_radius = abs(screen.getSize().x + screen.getSize().y)/1000;
+  int limit = 100000 - int(abs(screen.getSize().x + screen.getSize().y))*100;
+  limit = (limit < 0) ? 0 : limit;
+  limit = (limit > 100000) ? 100000 : limit;
+  for (DataPoint &p : dataset) {
+    p.resize(new_radius);
+    if (lim == limit) { break; }
+    p.show(&win);
+    ++lim;
+  }
+}
+
 int main() {
   vector<DataPoint> dataset;
   string op; cout << "Generate or Load?: "; cin >> op;
@@ -37,9 +51,7 @@ int main() {
     else {
       win.clear(Color(255, 255, 255));//RGB
     }
-    for (DataPoint &p : dataset) {
-      p.show(&win);
-    }
+    draw_data(dataset, win, screen);
     win.display();
   }
   return 0;
