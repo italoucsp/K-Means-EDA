@@ -7,6 +7,10 @@ int main() {
     get_data(dataset);
   else if(op == "load")
     get_data(dataset,0);
+  else {
+    ALERT("Command line error or not found.");
+    exit(1);
+  }
   size_t k; cout << "N" << char(167) << " clusters: "; cin >> k;
   k_means_clustering(dataset, k);
   RenderWindow win(VideoMode(W, H), "K-Means Visualizador");
