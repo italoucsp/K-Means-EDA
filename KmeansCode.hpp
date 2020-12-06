@@ -301,6 +301,10 @@ void get_data(vector<DataPoint> &dataset, bool random_gen = true) {
       }
 
     }
+    else {
+      ALERT("Command line error or not found.");
+      exit(1);
+    }
     cout << "Dataset created.\n";
   }
   else {
